@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NP 產品需求文件 | PM Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14201a;
+    --paper: #f4f1ea;
+    --cream: #ece7d8;
+    --green: #2d6e50;
+    --amber: #c07d2a;
+    --muted: #6b7068;
+    --border: #cdc8b5;
+    --highlight: #e8f0e8;
+    --red: #a03525;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); color:var(--ink); font-family:'Noto Serif TC',serif; line-height:1.7; }
+
+  .top-stripe { height:5px; background:repeating-linear-gradient(90deg,var(--green) 0,var(--green) 40px,var(--amber) 40px,var(--amber) 80px); }
+
+  /* HEADER */
+  .header { padding:48px 64px 36px; border-bottom:1.5px solid var(--ink); animation:fadeIn .7s ease both; }
+  .meta-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .badge { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.12em; padding:4px 10px; text-transform:uppercase; border:1px solid; }
+  .b-ink { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .b-green { color:var(--green); border-color:var(--green); }
+  .b-amber { color:var(--amber); border-color:var(--amber); }
+  .date-tag { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+  h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,5vw,56px); font-weight:600; line-height:1.1; letter-spacing:-.02em; max-width:820px; }
+  h1 em { font-style:italic; color:var(--green); }
+  .subtitle { margin-top:12px; font-size:14px; color:var(--muted); max-width:580px; line-height:1.7; }
+
+  .process-bar { margin-top:24px; display:flex; align-items:center; font-family:'DM Mono',monospace; font-size:10px; flex-wrap:wrap; }
+  .step { padding:5px 12px; border:1px solid var(--border); background:var(--cream); color:var(--muted); letter-spacing:.06em; }
+  .step.done { background:var(--green); color:#fff; border-color:var(--green); }
+  .sarrow { padding:5px 6px; background:var(--cream); border-top:1px solid var(--border); border-bottom:1px solid var(--border); color:var(--muted); }
+
+  /* MAIN */
+  .main { padding:0 64px 80px; max-width:1200px; }
+  .section { margin-top:56px; animation:slideUp .6s ease both; }
+  .section:nth-child(1){animation-delay:.05s}.section:nth-child(2){animation-delay:.1s}.section:nth-child(3){animation-delay:.15s}.section:nth-child(4){animation-delay:.2s}.section:nth-child(5){animation-delay:.25s}.section:nth-child(6){animation-delay:.3s}
+
+  .slabel { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.14em; color:var(--green); text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+  .slabel::after { content:''; flex:1; height:1px; background:var(--border); max-width:180px; }
+  h2 { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; margin-bottom:16px; }
+  h3 { font-family:'Noto Serif TC',serif; font-size:15px; font-weight:600; margin-bottom:10px; color:var(--ink); }
+
+  /* CONTEXT BOX */
+  .ctx { background:var(--highlight); border-left:3px solid var(--green); padding:20px 24px; margin-bottom:16px; font-size:14px; line-height:1.85; }
+  .hl { background:#c8e8d4; padding:1px 5px; font-weight:600; }
+
+  /* INFO GRID */
+  .info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; background:var(--border); border:1px solid var(--border); margin:16px 0; }
+  .info-cell { background:var(--paper); padding:18px 20px; }
+  .info-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.12em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+  .info-value { font-size:13.5px; font-weight:600; line-height:1.5; }
+
+  /* USER TABLE */
+  .user-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .user-card { border:1px solid var(--border); padding:20px; }
+  .user-card-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; color:var(--green); text-transform:uppercase; margin-bottom:10px; }
+  .user-name { font-family:'Cormorant Garamond',serif; font-size:20px; font-weight:600; margin-bottom:8px; }
+  .user-desc { font-size:13px; line-height:1.7; color:var(--ink); margin-bottom:10px; }
+  .user-need { font-size:12.5px; color:var(--muted); line-height:1.7; }
+  .user-need strong { color:var(--green); }
+
+  /* FEATURE BLOCKS */
+  .feature-block { border:1px solid var(--border); margin:16px 0; overflow:hidden; }
+  .feature-header { background:var(--ink); color:var(--paper); padding:16px 22px; display:flex; align-items:center; gap:14px; }
+  .feature-num { font-family:'DM Mono',monospace; font-size:11px; background:var(--green); color:#fff; padding:4px 10px; letter-spacing:.08em; flex-shrink:0; }
+  .feature-title { font-family:'Cormorant Garamond',serif; font-size:22px; font-weight:600; }
+  .feature-body { padding:20px 22px; }
+  .feature-desc { font-size:13.5px; line-height:1.85; margin-bottom:16px; color:var(--ink); }
+
+  .flow-steps { display:flex; flex-direction:column; gap:0; margin:14px 0; }
+  .flow-step { display:flex; gap:14px; align-items:flex-start; padding:10px 0; border-bottom:1px dashed var(--border); }
+  .flow-step:last-child { border-bottom:none; }
+  .flow-step-num { font-family:'DM Mono',monospace; font-size:10px; background:var(--green); color:#fff; width:22px; height:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+  .flow-step-content { font-size:13px; line-height:1.7; }
+  .flow-step-content strong { color:var(--ink); }
+
+  .design-note { background:var(--cream); border-left:3px solid var(--amber); padding:12px 16px; margin-top:12px; font-size:12.5px; color:var(--muted); line-height:1.7; }
+  .design-note strong { color:var(--amber); }
+
+  /* METRICS */
+  .metrics-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin:16px 0; }
+  .metric-card { border:1px solid var(--border); padding:18px; text-align:center; }
+  .metric-label { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:8px; }
+  .metric-value { font-family:'Cormorant Garamond',serif; font-size:32px; font-weight:600; color:var(--green); margin-bottom:4px; }
+  .metric-desc { font-size:11.5px; color:var(--muted); line-height:1.5; }
+
+  /* SCOPE TABLE */
+  .scope-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .scope-card { border:1px solid var(--border); padding:18px; }
+  .scope-title { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.1em; text-transform:uppercase; margin-bottom:12px; padding:3px 8px; display:inline-block; }
+  .scope-in { color:#2a5c40; background:#e8f4ec; border:1px solid #3a7a56; }
+  .scope-out { color:var(--red); background:#faecea; border:1px solid var(--red); }
+  .scope-list { list-style:none; }
+  .scope-list li { font-size:13px; line-height:1.6; padding:4px 0; border-bottom:1px dashed var(--border); display:flex; gap:8px; }
+  .scope-list li:last-child { border-bottom:none; }
+  .scope-list li::before { font-size:11px; margin-top:3px; flex-shrink:0; }
+  .scope-in-list li::before { content:'✓'; color:#2a5c40; }
+  .scope-out-list li::before { content:'✗'; color:var(--red); }
+
+  /* RISK TABLE */
+  .risk-table { width:100%; border-collapse:collapse; font-size:13px; margin:16px 0; }
+  .risk-table th { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.08em; background:var(--ink); color:var(--paper); padding:10px 14px; text-align:left; border-right:1px solid #2a3828; }
+  .risk-table td { padding:10px 14px; border:1px solid var(--border); vertical-align:top; line-height:1.6; }
+  .risk-table tr:nth-child(even) td { background:var(--cream); }
+  .risk-badge { font-family:'DM Mono',monospace; font-size:9px; padding:2px 6px; border-radius:2px; }
+  .r-high { background:#fde8e5; color:var(--red); border:1px solid var(--red); }
+  .r-mid { background:#fdf3e0; color:#8a5a10; border:1px solid var(--amber); }
+
+  /* ROADMAP */
+  .roadmap { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0; }
+  .roadmap-card { border:1px solid var(--border); padding:18px; position:relative; overflow:hidden; }
+  .roadmap-card::before { content:''; position:absolute; top:0; left:0; width:3px; height:100%; background:var(--green); }
+  .roadmap-phase { font-family:'DM Mono',monospace; font-size:9px; letter-spacing:.1em; color:var(--muted); text-transform:uppercase; margin-bottom:6px; }
+  .roadmap-title { font-size:15px; font-weight:600; margin-bottom:10px; color:var(--green); }
+  .roadmap-list { list-style:none; }
+  .roadmap-list li { font-size:12.5px; line-height:1.6; padding:3px 0; border-bottom:1px dashed var(--border); display:flex; gap:7px; }
+  .roadmap-list li:last-child { border-bottom:none; }
+  .roadmap-list li::before { content:'—'; color:var(--muted); font-size:11px; margin-top:3px; flex-shrink:0; }
+
+  /* AI NOTE */
+  .ainote { margin-top:36px; background:var(--cream); border:1px solid var(--border); padding:15px 20px; display:flex; gap:12px; }
+  .aiico { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--green); white-space:nowrap; margin-top:3px; }
+  .aitxt { font-size:12px; color:var(--muted); line-height:1.7; }
+  .aitxt strong { color:var(--ink); }
+
+  /* FOOTER */
+  .footer { padding:18px 64px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .fname { font-family:'Cormorant Garamond',serif; font-size:16px; font-style:italic; }
+  .fmeta { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.06em; }
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  @media(max-width:768px){
+    .header,.main,.footer{padding-left:20px;padding-right:20px}
+    .info-grid{grid-template-columns:1fr}
+    .user-grid{grid-template-columns:1fr}
+    .metrics-grid{grid-template-columns:1fr}
+    .scope-grid{grid-template-columns:1fr}
+    .roadmap{grid-template-columns:1fr}
+    h1{font-size:28px}
+  }
+</style>
+</head>
+<body>
+<div class="top-stripe"></div>
+
+<div class="header">
+  <div class="meta-row">
+    <span class="badge b-ink">專案 No.3</span>
+    <span class="badge b-green">產品需求文件 PRD</span>
+    <span class="badge b-amber">NP · 新產品提案</span>
+    <span class="date-tag">June 2026</span>
+  </div>
+  <h1><em>NP</em> 產品需求文件<br>讓努力被看見的學習平台</h1>
+  <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:.06em;">* NP 為產品暫定代號，正式名稱待定。</p>
+  <p class="subtitle">基於競品分析與用戶研究，提案一個以「學生成就感」為核心驅動力的國小學習產品。</p>
+  <div class="process-bar">
+    <span class="step done">01 背景與問題</span><span class="sarrow">→</span>
+    <span class="step done">02 目標用戶</span><span class="sarrow">→</span>
+    <span class="step done">03 核心功能</span><span class="sarrow">→</span>
+    <span class="step done">04 成功指標</span><span class="sarrow">→</span>
+    <span class="step done">05 範圍邊界</span><span class="sarrow">→</span>
+    <span class="step done">06 風險評估</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- 01 背景 -->
+  <div class="section">
+    <div class="slabel">01 · 背景與問題</div>
+    <h2>為什麼需要 NP？</h2>
+
+    <div class="info-grid">
+      <div class="info-cell">
+        <div class="info-label">市場背景</div>
+        <div class="info-value">台灣 150 萬國小學生已配備平板，但現有平台無一同時滿足學生、家長、老師三方需求</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">核心問題</div>
+        <div class="info-value">學生不知道自己哪裡不懂、家長看不懂孩子學了什麼、老師沒有時間個別追蹤</div>
+      </div>
+      <div class="info-cell">
+        <div class="info-label">根本原因</div>
+        <div class="info-value">現有教育只給解法，忽略概念層的理解，學生背題型而非真正理解，題型一變就不會</div>
+      </div>
+    </div>
+
+    <div class="ctx">
+      競品研究揭示一個共同矛盾：<span class="hl">PaGamO 學生愛但家長不信任、均一老師推薦但學生覺得無聊、因材網技術最強但學生體驗最差。</span>三個平台都在服務某一方，卻沒有一個真正同時解決所有人的需求。NP 的切入點是：先讓學生真正感受到進步，家長自然會跟進。
+    </div>
+  </div>
+
+  <!-- 02 目標用戶 -->
+  <div class="section">
+    <div class="slabel">02 · 目標用戶</div>
+    <h2>我們在服務誰？</h2>
+
+    <div class="user-grid">
+      <div class="user-card">
+        <div class="user-card-title">Primary User · 優先切入</div>
+        <div class="user-name">國小學生（7–12 歲）</div>
+        <div class="user-desc">學習的實際執行者。他們需要感受到自己在進步，而不是重複做題或被動接收答案。</div>
+        <div class="user-need"><strong>核心需求：</strong>知道自己哪裡不懂、看到弱點被補強、對自己的成長有成就感。</div>
+      </div>
+      <div class="user-card">
+        <div class="user-card-title">Key Stakeholder · 後續擴展</div>
+        <div class="user-name">家長（付費決策者）</div>
+        <div class="user-desc">付費者，但不是直接使用者。他們需要知道孩子有在學習，而且學習是有效的。</div>
+        <div class="user-need"><strong>核心需求：</strong>看得懂孩子的學習狀況、對付費感到值得、不需要花太多時間理解報告。</div>
+      </div>
+    </div>
+
+    <div class="ctx" style="margin-top:0;">
+      留存公式：<span class="hl">學生願意用 × 家長看得懂成效</span>，兩者缺一不可。先讓學生真正感受到進步，學生持續使用才能產生家長端需要的學習數據。
+      <br><br>
+      <strong>第一批用戶獲取策略：</strong>以家長社群口碑（Facebook 家長社團、LINE 群組）搭配完全免費策略為主，讓家長自發分享。不優先透過學校採購，因為機構決策鏈長，不適合初期快速驗證產品方向。
+    </div>
+  </div>
+
+  <!-- 03 核心功能 -->
+  <div class="section">
+    <div class="slabel">03 · 核心功能</div>
+    <h2>NP 的產品功能與開發優先順序</h2>
+
+    <!-- 功能一 -->
+    <div class="feature-block">
+      <div class="feature-header">
+        <span class="feature-num">功能 01</span>
+        <span class="feature-title">AI 對話式診斷</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--green);color:#fff;padding:3px 8px;margin-left:auto;">優先開發</span>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          現有平台答錯只給正確解法，忽略學生真正卡住的地方往往是整體概念錯誤，而非單一題目不會。NP 透過 AI 對話，找出學生在哪個思考環節出問題，釐清概念層的模糊點。提供圖文選項供學生點選，同時支援自由打字輸入，降低不同年齡學生的使用門檻。
+        </div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-content"><strong>學生答題</strong>——完成一道題目後，系統等待學生反應</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-content"><strong>雙觸發機制</strong>——學生可主動點「我不懂」發起對話；或 5 分鐘無回應 / 答錯，系統自動觸發對話</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <div class="flow-step-content"><strong>提供正確解法</strong>——無論答對或答錯，系統均提供正確解法與概念說明，讓學生確認自己的思路是否正確，而不只是知道答案對了</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">4</div>
+            <div class="flow-step-content"><strong>AI 問學生</strong>——「你是怎麼想這題的？」「你覺得哪個步驟開始不確定？」</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">5</div>
+            <div class="flow-step-content"><strong>診斷模糊點</strong>——根據學生的回答，找出是概念理解錯誤、計算步驟失誤，還是題型不熟悉</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">6</div>
+            <div class="flow-step-content"><strong>猜題偵測機制</strong>——系統追蹤同類型題目的答對率，若同類型題目答錯比例超過門檻（例如答錯 3 題以上或答對率低於 50%），自動判定為「不熟悉該題型或概念」，加入弱點清單並優先安排診斷</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">7</div>
+            <div class="flow-step-content"><strong>針對性解釋</strong>——不給標準解法，而是針對學生的具體困難點給予說明</div>
+          </div>
+        </div>
+        <div class="design-note"><strong>設計原則：</strong>目標是讓學生理解概念，而不是背解題步驟。題型改變時，真正理解概念的學生才能應對。</div>
+      </div>
+    </div>
+
+    <!-- 功能二 -->
+    <div class="feature-block">
+      <div class="feature-header">
+        <span class="feature-num">功能 02</span>
+        <span class="feature-title">弱點清單</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--green);color:#fff;padding:3px 8px;margin-left:auto;">優先開發</span>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          以概念層級整理學生的弱點，而非題目列表。讓學生清楚知道「我目前有哪些概念還不熟」，而不是「我錯了幾題」。
+        </div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-content"><strong>題目層標示</strong>——標示答錯的題目與題號，方便學生回頭複習具體題目，了解自己錯了哪些</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-content"><strong>概念層歸納</strong>——將錯誤題目歸納為對應的概念類別，例如「分數加法的進位」、「文章段落主旨判斷」，讓學生看到這些錯誤背後代表哪個概念需要補強</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <div class="flow-step-content"><strong>兩層對應呈現</strong>——題目層與概念層互相對應，學生同時知道「我錯了第 5、8、12 題」和「這三題都屬於『分數加法進位』這個概念需要加強」</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">4</div>
+            <div class="flow-step-content"><strong>動態更新</strong>——每次 AI 診斷後，弱點清單自動更新，已補強的概念標示為「已掌握」</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">5</div>
+            <div class="flow-step-content"><strong>優先排序</strong>——系統根據弱點的嚴重程度和相關概念的學習依存關係，排列補強順序</div>
+          </div>
+        </div>
+        <div class="design-note"><strong>設計原則：</strong>弱點清單不是讓學生感到挫折的清單，而是讓學生知道「我接下來要往哪裡走」的路線圖。</div>
+      </div>
+    </div>
+
+    <!-- 功能三 -->
+    <div class="feature-block">
+      <div class="feature-header">
+        <span class="feature-num">功能 03</span>
+        <span class="feature-title">具體進步回饋</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--amber);color:#fff;padding:3px 8px;margin-left:auto;">後續開發</span>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          現有平台的回饋太模糊（「你進步了！」），學生沒有真實的成就感。NP 給出具體數字與行動建議，讓進步是看得見、感受得到的。
+        </div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-content"><strong>預設顯示自我比較</strong>——預設只呈現「與自己上週比較」，確保每個學生都能看到自己的成長；「與同齡平均比較」為選擇性開啟，由家長或學生在設定中選擇是否開啟，避免落後的學生受到打擊</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-content"><strong>具體進步描述</strong>——「A 部分進步了 X%，比上週提升，也已超越同齡平均」</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <div class="flow-step-content"><strong>誠實呈現未補強弱點</strong>——「B 部分進步了 Y%，這禮拜繼續加強」，不迴避問題</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">4</div>
+            <div class="flow-step-content"><strong>下週行動建議</strong>——「這禮拜主攻 B，A 為輔」，學生不需要自己決定讀什麼</div>
+          </div>
+        </div>
+        <div class="design-note"><strong>設計原則：</strong>成就感必須是具體的，不是模糊的鼓勵語。「比上週進步 12%」比「你很棒」更有說服力。</div>
+      </div>
+    </div>
+
+    <!-- 功能四 -->
+    <div class="feature-block">
+      <div class="feature-header">
+        <span class="feature-num">功能 04</span>
+        <span class="feature-title">引導式目標設定</span>
+        <span style="font-family:'DM Mono',monospace;font-size:9px;background:var(--amber);color:#fff;padding:3px 8px;margin-left:auto;">後續開發</span>
+      </div>
+      <div class="feature-body">
+        <div class="feature-desc">
+          讓學生參與自己的學習目標設定，提升內在動機。但完全自由的目標設定可能讓學生設定不切實際的標準，造成反效果，因此採用引導式設計。
+        </div>
+        <div class="flow-steps">
+          <div class="flow-step">
+            <div class="flow-step-num">1</div>
+            <div class="flow-step-content"><strong>系統提供建議目標</strong>——根據學生目前弱點和進度，自動產生合理的本週目標</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">2</div>
+            <div class="flow-step-content"><strong>學生可在範圍內調整</strong>——例如系統建議 15%，學生可調整為 10%–25%，不能設定不合理的數值</div>
+          </div>
+          <div class="flow-step">
+            <div class="flow-step-num">3</div>
+            <div class="flow-step-content"><strong>目標達成回饋</strong>——達成目標時明確告知，強化成就感與繼續使用的動機</div>
+          </div>
+        </div>
+        <div class="design-note"><strong>設計原則：</strong>保留學生的自主感（我自己選的目標），同時系統在背後保護學生不設定造成挫折的不合理目標。</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 04 成功指標 -->
+  <div class="section">
+    <div class="slabel">04 · 成功指標</div>
+    <h2>怎麼知道 NP 做成功了？</h2>
+
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <div class="metric-label">學生端 · 核心指標</div>
+        <div class="metric-value">60%</div>
+        <div class="metric-desc">60% 的學生每週主動使用超過 3 次（非老師指派）</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">學習效果指標</div>
+        <div class="metric-value">40%</div>
+        <div class="metric-desc">使用 AI 對話診斷的學生，同概念題目再答錯率下降 40%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">家長端指標</div>
+        <div class="metric-value">70%</div>
+        <div class="metric-desc">家長每週開啟學習報告的比例達 70%，續訂率提升 20%</div>
+      </div>
+    </div>
+    <div class="ctx" style="margin-top:0;font-size:13px;">
+      <strong>數字說明：</strong>以上數字以 AI 輔助研究設定為初始基準，實際上線後將根據真實用戶數據重新校正。指標方向的選擇——學生主動使用頻率反映內在動機、答錯率下降反映學習效果——為 PM 自行判斷。
+    </div>
+  </div>
+
+  <!-- 05 開發優先順序 -->
+  <div class="section">
+    <div class="slabel">05 · 開發優先順序與策略</div>
+    <h2>哪些先做、哪些後做？</h2>
+
+    <div class="scope-grid">
+      <div class="scope-card">
+        <span class="scope-title scope-in">優先開發</span>
+        <ul class="scope-list scope-in-list">
+          <li>AI 對話式診斷（核心差異化功能）</li>
+          <li>概念層級弱點清單（診斷結果呈現）</li>
+          <li>國小數學、國語兩科目</li>
+          <li>學生端完整體驗</li>
+        </ul>
+      </div>
+      <div class="scope-card">
+        <span class="scope-title" style="color:var(--amber);border-color:var(--amber);background:#fdf3e0;">後續開發</span>
+        <ul class="scope-list" style="list-style:none;">
+          <li style="display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border);font-size:13px;"><span style="color:var(--amber);">→</span>具體進步回饋機制</li>
+          <li style="display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border);font-size:13px;"><span style="color:var(--amber);">→</span>引導式目標設定</li>
+          <li style="display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border);font-size:13px;"><span style="color:var(--amber);">→</span>家長端學習報告（付費功能）</li>
+          <li style="display:flex;gap:8px;padding:4px 0;border-bottom:1px dashed var(--border);font-size:13px;"><span style="color:var(--amber);">→</span>擴充科目覆蓋</li>
+          <li style="display:flex;gap:8px;padding:4px 0;font-size:13px;"><span style="color:var(--amber);">→</span>老師後台功能</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="ctx" style="margin-top:16px;">
+      <strong>付費策略：</strong>學生端功能初期完全免費，以家長社群口碑擴散建立用戶基礎。待家長端學習報告功能上線後開始收費——因為家長才是付費者，當產品能讓家長真正看懂孩子的學習成效時，才是開始收費的時機。
+      <br><br>
+      <strong>題庫策略：</strong>優先與現有平台（如均一）洽談授權合作，快速取得大量題庫，同時小規模自建針對 AI 診斷需求客製化的題目。合作讓產品快速上線驗證方向，自建讓產品長期保有差異化能力。
+    </div>
+  </div>
+
+  <!-- 06 風險評估 -->
+  <div class="section">
+    <div class="slabel">06 · 風險評估</div>
+    <h2>有什麼可能出錯？</h2>
+
+    <table class="risk-table">
+      <thead>
+        <tr>
+          <th>風險</th>
+          <th>影響程度</th>
+          <th>因應方式</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>猜題偵測門檻設定不當</strong>——門檻太低，學生偶爾答錯就被判定不熟悉，頻繁觸發診斷造成學習中斷；門檻太高，學生其實不懂但系統未偵測到，弱點清單遺漏重要概念</td>
+          <td><span class="risk-badge r-mid">中</span></td>
+          <td>初期設定保守門檻，上線後根據實際答題數據持續調整；同時讓學生可手動標記「我其實不確定這題」，補充系統偵測的不足</td>
+        </tr>
+        <tr>
+          <td><strong>AI 診斷準確度不足</strong>——AI 誤判學生的困難點，給出錯誤的解釋方向</td>
+          <td><span class="risk-badge r-high">高</span></td>
+          <td>初期加入人工審查機制，AI 診斷結果可由老師或家長標記錯誤，持續優化模型</td>
+        </tr>
+        <tr>
+          <td><strong>學生不願意主動輸入</strong>——對話式診斷需要學生參與回答，國小生可能抗拒打字</td>
+          <td><span class="risk-badge r-high">高</span></td>
+          <td>提供圖文選項供學生點選，同時支援自由打字輸入，兩種方式並存，降低使用門檻</td>
+        </tr>
+        <tr>
+          <td><strong>家長不理解產品價值</strong>——第一版沒有家長端功能，家長可能不願付費</td>
+          <td><span class="risk-badge r-mid">中</span></td>
+          <td>第一版採免費策略，先建立學生使用習慣，第二階段推出家長端功能再轉付費</td>
+        </tr>
+        <tr>
+          <td><strong>內容覆蓋不足</strong>——只有數學和國語，學生需求超出範圍</td>
+          <td><span class="risk-badge r-mid">中</span></td>
+          <td>聚焦兩科做深做好，根據用戶回饋決定第二階段擴充科目優先順序</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <!-- ROADMAP -->
+    <h3 style="margin-top:28px;">產品發展路線圖</h3>
+    <div class="roadmap">
+      <div class="roadmap-card">
+        <div class="roadmap-phase">Phase 1 · 優先</div>
+        <div class="roadmap-title">建立學生信任</div>
+        <ul class="roadmap-list">
+          <li>AI 對話式診斷上線</li>
+          <li>概念層級弱點清單</li>
+          <li>數學、國語兩科目</li>
+          <li>完全免費策略</li>
+          <li>家長社群口碑擴散</li>
+        </ul>
+      </div>
+      <div class="roadmap-card">
+        <div class="roadmap-phase">Phase 2 · 後續</div>
+        <div class="roadmap-title">擴大影響範圍</div>
+        <ul class="roadmap-list">
+          <li>具體進步回饋機制</li>
+          <li>引導式目標設定</li>
+          <li>家長端學習報告（付費）</li>
+          <li>擴充科目覆蓋</li>
+          <li>老師後台基本功能</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="fname">韓涵 Hanny Han · PM 專案</div>
+  <div class="fmeta">NP 產品需求文件 · June 2026</div>
+</div>
+
+</body>
+</html>

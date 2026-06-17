@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用戶研究報告 | PM Portfolio</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@400;600;700&family=DM+Mono:wght@400;500&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #14201a;
+    --paper: #f4f1ea;
+    --cream: #ece7d8;
+    --green: #2d6e50;
+    --amber: #c07d2a;
+    --muted: #6b7068;
+    --border: #cdc8b5;
+    --highlight: #e8f0e8;
+    --red: #a03525;
+    --tag-warn: #fdf3e0;
+    --tag-warn-border: #c07d2a;
+    --tag-ok: #e8f4ec;
+    --tag-ok-border: #3a7a56;
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:var(--paper); color:var(--ink); font-family:'Noto Serif TC',serif; line-height:1.7; }
+
+  .top-stripe { height:5px; background:repeating-linear-gradient(90deg,var(--green) 0,var(--green) 40px,var(--amber) 40px,var(--amber) 80px); }
+
+  /* HEADER */
+  .header { padding:48px 64px 36px; border-bottom:1.5px solid var(--ink); animation:fadeIn .7s ease both; }
+  .meta-row { display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap; }
+  .badge { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.12em; padding:4px 10px; text-transform:uppercase; border:1px solid; }
+  .b-ink { background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .b-green { color:var(--green); border-color:var(--green); }
+  .b-amber { color:var(--amber); border-color:var(--amber); }
+  .date-tag { font-family:'DM Mono',monospace; font-size:11px; color:var(--muted); }
+  h1 { font-family:'Cormorant Garamond',serif; font-size:clamp(30px,5vw,56px); font-weight:600; line-height:1.1; letter-spacing:-.02em; max-width:820px; }
+  h1 em { font-style:italic; color:var(--green); }
+  .subtitle { margin-top:12px; font-size:14px; color:var(--muted); max-width:580px; line-height:1.7; }
+
+  .process-bar { margin-top:24px; display:flex; align-items:center; font-family:'DM Mono',monospace; font-size:10px; flex-wrap:wrap; }
+  .step { padding:5px 12px; border:1px solid var(--border); background:var(--cream); color:var(--muted); letter-spacing:.06em; }
+  .step.done { background:var(--green); color:#fff; border-color:var(--green); }
+  .sarrow { padding:5px 6px; background:var(--cream); border-top:1px solid var(--border); border-bottom:1px solid var(--border); color:var(--muted); }
+
+  /* MAIN */
+  .main { padding:0 64px 80px; max-width:1200px; }
+  .section { margin-top:56px; animation:slideUp .6s ease both; }
+  .section:nth-child(1){animation-delay:.05s}.section:nth-child(2){animation-delay:.1s}.section:nth-child(3){animation-delay:.15s}.section:nth-child(4){animation-delay:.2s}
+
+  .slabel { font-family:'DM Mono',monospace; font-size:10px; letter-spacing:.14em; color:var(--green); text-transform:uppercase; margin-bottom:14px; display:flex; align-items:center; gap:12px; }
+  .slabel::after { content:''; flex:1; height:1px; background:var(--border); max-width:180px; }
+  h2 { font-family:'Cormorant Garamond',serif; font-size:26px; font-weight:600; margin-bottom:16px; }
+
+  /* PLATFORM CARDS */
+  .platform-block { border:1px solid var(--border); margin:20px 0; overflow:hidden; }
+
+  .platform-header { padding:20px 24px; background:var(--ink); color:var(--paper); display:flex; justify-content:space-between; align-items:flex-start; gap:16px; }
+  .platform-name { font-family:'Cormorant Garamond',serif; font-size:28px; font-weight:600; }
+  .platform-source { font-family:'DM Mono',monospace; font-size:9px; color:#8aab98; letter-spacing:.08em; margin-top:4px; line-height:1.6; }
+  .platform-brand { font-family:'DM Mono',monospace; font-size:10px; color:#c8ddd5; text-align:right; max-width:280px; line-height:1.6; }
+
+  .platform-body { padding:0; }
+
+  /* SECTIONS WITHIN PLATFORM */
+  .p-section { padding:20px 24px; border-bottom:1px solid var(--border); }
+  .p-section:last-child { border-bottom:none; }
+
+  .p-section-label {
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    letter-spacing:.12em;
+    text-transform:uppercase;
+    margin-bottom:14px;
+    padding:4px 10px;
+    display:inline-block;
+  }
+
+  .label-warn { background:#fdf3e0; color:#8a5a10; border:1px solid var(--amber); }
+  .label-minor { background:#f0ede4; color:var(--muted); border:1px solid var(--border); }
+  .label-obs { background:#e8f0e8; color:#2a5c40; border:1px solid #3a7a56; }
+  .label-pos { background:#f4f1ea; color:var(--muted); border:1px solid var(--border); }
+
+  /* NUMBERED SUBSECTIONS */
+  .sub-group { margin-bottom:16px; }
+  .sub-group:last-child { margin-bottom:0; }
+
+  .sub-title {
+    font-size:13px;
+    font-weight:600;
+    color:var(--ink);
+    margin-bottom:8px;
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
+
+  .sub-num {
+    font-family:'DM Mono',monospace;
+    font-size:10px;
+    background:var(--ink);
+    color:var(--paper);
+    width:18px;
+    height:18px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    flex-shrink:0;
+  }
+
+  .sub-num-warn {
+    background:var(--amber);
+    color:#fff;
+  }
+
+  ul.plist { list-style:none; padding:0 0 0 26px; }
+  ul.plist li { font-size:13px; line-height:1.7; padding:3px 0; border-bottom:1px dashed var(--border); display:flex; gap:8px; align-items:flex-start; }
+  ul.plist li:last-child { border-bottom:none; }
+  ul.plist li::before { content:'—'; color:var(--muted); font-size:11px; margin-top:4px; flex-shrink:0; }
+
+  ul.plist-obs li::before { color:var(--green); }
+  ul.plist-pos li::before { color:var(--amber); }
+
+  /* INSIGHT BOX */
+  .insight-box {
+    margin-top:28px;
+    border:2px solid var(--ink);
+    padding:24px;
+    position:relative;
+  }
+
+  .insight-box::before {
+    content:'跨平台核心洞察';
+    font-family:'DM Mono',monospace;
+    font-size:9px;
+    letter-spacing:.1em;
+    background:var(--ink);
+    color:var(--paper);
+    padding:3px 12px;
+    position:absolute;
+    top:-12px; left:20px;
+  }
+
+  .insight-title {
+    font-family:'Cormorant Garamond',serif;
+    font-size:20px;
+    font-weight:600;
+    margin-bottom:12px;
+  }
+
+  .insight-body { font-size:13.5px; line-height:1.85; }
+  .insight-body strong { color:var(--green); }
+
+  .insight-grid {
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:12px;
+    margin-top:20px;
+  }
+
+  .insight-card {
+    background:var(--cream);
+    padding:16px;
+    border:1px solid var(--border);
+  }
+
+  .insight-card-title {
+    font-family:'DM Mono',monospace;
+    font-size:9.5px;
+    letter-spacing:.1em;
+    color:var(--green);
+    text-transform:uppercase;
+    margin-bottom:8px;
+  }
+
+  .insight-card-body { font-size:12.5px; line-height:1.7; }
+
+  /* AI NOTE */
+  .ainote { margin-top:36px; background:var(--cream); border:1px solid var(--border); padding:15px 20px; display:flex; gap:12px; }
+  .aiico { font-family:'DM Mono',monospace; font-size:9.5px; color:var(--green); white-space:nowrap; margin-top:3px; }
+  .aitxt { font-size:12px; color:var(--muted); line-height:1.7; }
+  .aitxt strong { color:var(--ink); }
+
+  /* FOOTER */
+  .footer { padding:18px 64px; border-top:1px solid var(--border); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px; }
+  .fname { font-family:'Cormorant Garamond',serif; font-size:16px; font-style:italic; }
+  .fmeta { font-family:'DM Mono',monospace; font-size:10px; color:var(--muted); letter-spacing:.06em; }
+
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes slideUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
+
+  @media(max-width:768px){
+    .header,.main,.footer{padding-left:20px;padding-right:20px}
+    .platform-header{flex-direction:column}
+    .platform-brand{text-align:left}
+    .insight-grid{grid-template-columns:1fr}
+    h1{font-size:28px}
+  }
+</style>
+</head>
+<body>
+<div class="top-stripe"></div>
+
+<div class="header">
+  <div class="meta-row">
+    <span class="badge b-ink">專案 No.2</span>
+    <span class="badge b-green">用戶研究報告</span>
+    <span class="badge b-amber">EdTech · 國小教育</span>
+    <span class="date-tag">June 2026</span>
+  </div>
+  <h1>三大平台<em>用戶聲音</em>研究<br>痛點萃取與洞察</h1>
+  <p class="subtitle">結合 App Store 評論、網路論壇、教師社群討論與安親班現場觀察，萃取 PaGamO、均一、因材網三個平台的真實用戶痛點。</p>
+  <div class="process-bar">
+    <span class="step done">01 資料收集</span><span class="sarrow">→</span>
+    <span class="step done">02 痛點分類</span><span class="sarrow">→</span>
+    <span class="step done">03 主次判斷</span><span class="sarrow">→</span>
+    <span class="step done">04 跨平台洞察</span>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- PaGamO -->
+  <div class="section">
+    <div class="slabel">01 · PaGamO</div>
+
+    <div class="platform-block">
+      <div class="platform-header">
+        <div>
+          <div class="platform-name">PaGamO</div>
+          <div class="platform-source">資料來源：App Store 用戶評論（12 則）</div>
+        </div>
+        <div class="platform-brand">台灣最高黏著度的遊戲化學習平台，300 萬活躍用戶，但學習成效備受質疑。</div>
+      </div>
+
+      <div class="platform-body">
+
+        <div class="p-section">
+          <span class="p-section-label label-pos">正評補充</span>
+          <ul class="plist plist-pos">
+            <li>畫風精緻、配樂完整，學生黏著度高</li>
+            <li>遊戲機制讓學生較願意主動開啟</li>
+          </ul>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-warn">主要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">1</span>系統穩定性</div>
+            <ul class="plist">
+              <li>容易出現閃退問題</li>
+              <li>版面比例失調、題目文字看不到</li>
+              <li>帳號安全疑慮（帳號被盜）</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">2</span>題目與內容品質</div>
+            <ul class="plist">
+              <li>會出現難度不符合該年級程度的題目</li>
+              <li>學生基本上以 App 為主，以方便快速操作，但 App 介面略比網頁版不易使用</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">3</span>學習效果存疑</div>
+            <ul class="plist">
+              <li>遊戲成份較重，偏向玩樂性質，失去教育本質</li>
+              <li>學生一開始用猜的，之後直接看答案，學習行為根本沒有發生</li>
+              <li>學校強迫使用，學生被動應付，興趣自然消失</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-minor">次要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num">1</span>社群管理缺失</div>
+            <ul class="plist">
+              <li>詳解留言區充斥加好友、罵人、推銷內容</li>
+              <li>舉報後沒有改善，平台缺乏管理</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num">2</span>付費與被迫使用</div>
+            <ul class="plist">
+              <li>費用偏高、部分用戶反映被學校強迫購買</li>
+              <li>額外題目需付費</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-obs">親身觀察</span>
+          <ul class="plist plist-obs">
+            <li>詳解區社交留言模糊了學習工具與社交遊戲的邊界</li>
+            <li>孩子喜歡，但家長不放心續訂</li>
+            <li style="color:var(--muted);font-size:12px;">以上為親身試用後的直接觀察，非來自評論推論。</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 均一 -->
+  <div class="section">
+    <div class="slabel">02 · 均一教育平台</div>
+
+    <div class="platform-block">
+      <div class="platform-header">
+        <div>
+          <div class="platform-name">均一教育平台</div>
+          <div class="platform-source">資料來源：Mobile01、獨立評論、天下雜誌、Facebook 家長社團</div>
+        </div>
+        <div class="platform-brand">非營利定位、大企業背書、完全免費無廣告，形成強大道德光環，用戶批評意願低，負評極少。</div>
+      </div>
+
+      <div class="platform-body">
+
+        <div class="p-section">
+          <span class="p-section-label label-pos">正評補充</span>
+          <ul class="plist plist-pos">
+            <li>免費、無廣告、安全可靠</li>
+            <li>老師後台可追蹤學習歷程，家長帳號可查看孩子進度</li>
+            <li>熱血教師社群形成自發性內容貢獻</li>
+            <li>已佈局 AI 課程與 AI 筆記本</li>
+          </ul>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-warn">主要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">1</span>學生自律要求高</div>
+            <ul class="plist">
+              <li>高度仰賴學生自律，被動型學生容易半途而廢</li>
+              <li>超過一半學生未完成回家作業或指派任務</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">2</span>教學內容體驗</div>
+            <ul class="plist">
+              <li>教學影片為 PPT 加旁白念稿，速度無法調整</li>
+              <li>對習慣 YouTube 的學生來說不是不會用，而是容易覺得無聊、中途放棄</li>
+              <li>科目偏重數理，文科覆蓋較弱</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-minor">次要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num">1</span>課業壓力</div>
+            <ul class="plist">
+              <li>老師指派過多線上作業，造成額外課業壓力</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num">2</span>資源品質不均</div>
+            <ul class="plist">
+              <li>教學資源品質不一，部分過難或過易</li>
+              <li>缺乏即時師生互動</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-obs">親身觀察</span>
+          <ul class="plist plist-obs">
+            <li>教學影片枯燥、速度鎖死，學生容易中途放棄</li>
+            <li style="color:var(--muted);font-size:12px;">以上為親身試用後的直接觀察，非來自評論推論。</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 因材網 -->
+  <div class="section">
+    <div class="slabel">03 · 因材網</div>
+
+    <div class="platform-block">
+      <div class="platform-header">
+        <div>
+          <div class="platform-name">因材網</div>
+          <div class="platform-source">資料來源：網路論壇、教師社群討論、安親班現場觀察</div>
+        </div>
+        <div class="platform-brand">教育部主導創立，缺乏商業驅動力改善用戶體驗，負評極少但問題清晰。</div>
+      </div>
+
+      <div class="platform-body">
+
+        <div class="p-section">
+          <span class="p-section-label label-pos">正評補充</span>
+          <ul class="plist plist-pos">
+            <li>診斷功能最強，能精準找出學生在哪個概念出問題</li>
+            <li>自適應技術領先，相當於「數位家教」</li>
+            <li>老師後台數據詳細，學習歷程完整記錄</li>
+            <li>家長帳號可登入查看孩子學習狀況</li>
+            <li>適性測驗技術平均可節省 40–50% 的題數</li>
+          </ul>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-warn">主要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">1</span>介面與操作體驗</div>
+            <ul class="plist">
+              <li>介面不直覺、畫面複雜，第一次使用很多功能找不到</li>
+              <li>操作上需要花蠻多時間熟悉</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">2</span>內容吸引力不足</div>
+            <ul class="plist">
+              <li>影片冗長又無趣，學生動機容易下降</li>
+              <li>沒有學習動機的學生使用時流於形式，變成「猜猜看遊戲」</li>
+            </ul>
+          </div>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num sub-num-warn">3</span>定位限制</div>
+            <ul class="plist">
+              <li>老師普遍把因材網定位為「前測後測診斷工具」，不適合作為日常學習主力</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-minor">次要問題</span>
+
+          <div class="sub-group">
+            <div class="sub-title"><span class="sub-num">1</span>推廣與熟悉度</div>
+            <ul class="plist">
+              <li>因教育部主導，缺乏主動推廣，許多老師和學生不熟悉其完整功能</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="p-section">
+          <span class="p-section-label label-obs">親身觀察</span>
+          <ul class="plist plist-obs">
+            <li>安親班現場看到老師實際指派作業使用</li>
+            <li style="color:var(--muted);font-size:12px;">以上為安親班現場觀察，非來自評論推論。</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 跨平台洞察 -->
+  <div class="section">
+    <div class="slabel">04 · 跨平台洞察</div>
+
+    <div class="insight-box">
+      <div class="insight-title">三個平台共同揭示的核心矛盾</div>
+      <div class="insight-body">
+        三個平台各有不同定位，但用戶研究揭示了一個共同的根本問題：<strong>每個平台都在服務老師或學生其中一方，卻沒有一個平台真正同時解決兩方的需求。</strong>
+        <br><br>
+        老師需要的是數據與管理工具；學生需要的是動機與趣味；家長需要的是看得懂的成效。三者同時滿足，才是真正的留存。
+        <br><br>
+        這也說明，下一個能真正留存的產品，不是功能更多，而是第一個同時讓學生願意用、家長看得懂成效的平台。
+      </div>
+
+      <div class="insight-grid">
+        <div class="insight-card">
+          <div class="insight-card-title">PaGamO 的矛盾</div>
+          <div class="insight-card-body">學生最愛用，但家長最不放心。遊戲成份過重，學習行為沒有真正發生，孩子喜歡但家長不願續訂。</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-card-title">均一的矛盾</div>
+          <div class="insight-card-body">老師最信任，但學生最容易放棄。內容紮實但體驗枯燥，高度仰賴學生自律，被動型學生幾乎無法持續。</div>
+        </div>
+        <div class="insight-card">
+          <div class="insight-card-title">因材網的矛盾</div>
+          <div class="insight-card-body">技術最先進，但體驗最落後。診斷功能強大，卻因介面複雜、影片無趣，只能作為診斷工具而非日常學習平台。</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div class="fname">韓涵 Hanny Han · PM 專案</div>
+  <div class="fmeta">台灣國小教育科技用戶研究報告 · June 2026</div>
+</div>
+
+</body>
+</html>
